@@ -4,28 +4,40 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.InetAddress;
 import java.net.SocketException;
+import java.util.ArrayDeque;
 import java.util.Deque;
-import java.util.NoSuchElementException;
+import java.util.Observable;
+import java.util.Observer;
 import org.apache.commons.net.telnet.TelnetClient;
-import weather.ActionsDequeuWrapper;
-import weather.WeatherAction;
+import weather.GameAction;
 
-public class TelnetConnection {
+public class TelnetConnection implements Observer {
 
     private TelnetClient telnetClient = new TelnetClient();
+    private InputOutput inputOutput = new InputOutput();
+    private Deque<GameAction> gameActions = new ArrayDeque<>();
+
+    public static void main(String[] args) {
+        new TelnetConnection();
+    }
 
     public TelnetConnection() {
+        init();
+    }
+
+    private void init() {
         try {
             int port = 3000;
             InetAddress host = InetAddress.getByName("rainmaker.wunderground.com");
             telnetClient.connect(host, port);
-            IOUtil.readWriteLog(telnetClient.getInputStream(), telnetClient.getOutputStream());
+            inputOutput.readWriteParse(telnetClient.getInputStream(), telnetClient.getOutputStream());
         } catch (SocketException ex) {
         } catch (IOException ex) {
         }
+        inputOutput.addObserver(this);
     }
 
-    private void sendAction(WeatherAction action) throws IOException {
+    private void sendAction(GameAction action) throws IOException {
         byte[] actionBytes = action.getAction().getBytes();
         OutputStream outputStream = telnetClient.getOutputStream();
         outputStream.write(actionBytes);
@@ -34,22 +46,21 @@ public class TelnetConnection {
         outputStream.flush();
     }
 
-    private void sendActions(Deque<WeatherAction> ga, long delay) {
-        byte[] commandBytes = null;
-        OutputStream outputStream = telnetClient.getOutputStream();
-        while (!ga.isEmpty()) {
+    private void sendActions() {
+        while (!gameActions.isEmpty()) {
+            GameAction action = gameActions.remove();
             try {
-                WeatherAction action = ga.remove();
                 sendAction(action);
-                Thread.sleep(delay);
-            } catch (InterruptedException | IOException | NoSuchElementException ex) {
-            } finally {
+            } catch (IOException ex) {
             }
         }
     }
 
-    public void send(ActionsDequeuWrapper actions) {
-        Deque<WeatherAction> ga = actions.get();
-        sendActions(ga,5);
+    @Override
+    public void update(Observable o, Object arg) {
+        if (o instanceof InputOutput) {
+            gameActions = inputOutput.getGameActions();
+            inputOutput.reset();
+        }
     }
 }

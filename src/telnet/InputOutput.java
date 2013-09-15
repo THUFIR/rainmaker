@@ -10,15 +10,23 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.util.ArrayDeque;
+import java.util.Deque;
+import java.util.Observable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.commons.io.output.TeeOutputStream;
+import weather.GameAction;
 
-public final class IOUtil {
+public class InputOutput extends Observable {
 
-    private static final Logger log = Logger.getLogger(IOUtil.class.getName());
+    private static final Logger log = Logger.getLogger(InputOutput.class.getName());
+    private Deque<GameAction> dq = new ArrayDeque<>();
 
-    private static void readFromConsole(final OutputStream outputStream) {
+    public InputOutput() {
+    }
+
+    private void readFromConsole(final OutputStream outputStream) {
         Thread read = new Thread() {
 
             @Override
@@ -38,7 +46,7 @@ public final class IOUtil {
         read.start();
     }
 
-    private static void readInput(final InputStream inputStream) throws FileNotFoundException, IOException {
+    private void readInput(final InputStream inputStream) throws FileNotFoundException, IOException {
         Thread readInput = new Thread() {
 
             @Override
@@ -55,12 +63,14 @@ public final class IOUtil {
                         //logToFile(ch);
                         sb.append(ch);
                         if (intVal == 13) {
-                            rx.parse(sb.toString());
+                            dq = rx.parse(sb.toString());
                             sb = new StringBuilder();
+                            setChanged();
+                            notifyObservers();
                         }
                     }
                 } catch (IOException ex) {
-                    Logger.getLogger(IOUtil.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(InputOutput.class.getName()).log(Level.SEVERE, null, ex);
                 }
 
 
@@ -70,10 +80,10 @@ public final class IOUtil {
                 String fname = "weather.log";
                 File f = new File(fname);
                 f.createNewFile();
-                PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(fname, true)));
-                out.print(c);
-                out.flush();
-                out.close();
+                try (PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(fname, true)))) {
+                    out.print(c);
+                    out.flush();
+                }
             }
 
             private void printToConsole(char c) {
@@ -83,14 +93,22 @@ public final class IOUtil {
         readInput.start();
     }
 
-    public static void readWriteLog(final InputStream inputStream, final OutputStream outputStream) throws FileNotFoundException, IOException {
+    public void readWriteParse(final InputStream inputStream, final OutputStream outputStream) throws FileNotFoundException, IOException {
         readFromConsole(outputStream);
         readInput(inputStream);
     }
 
     //                TeeOutputStream tee = new TeeOutputStream(inputStream, bis);   
-    private static void tee(FileOutputStream fos) {
+    private void tee(FileOutputStream fos) {
         TeeOutputStream tee = new TeeOutputStream(System.out, fos);
 
+    }
+
+    Deque<GameAction> getGameActions() {
+        return dq;
+    }
+
+    void reset() {
+        dq = new ArrayDeque<>();
     }
 }

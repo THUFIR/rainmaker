@@ -1,10 +1,10 @@
 package weather;
 
-public class WeatherAction {
+public class GameAction {
 
     private String action = null;
 
-    public WeatherAction(String action) {
+    public GameAction(String action) {
         this.action = action;
     }
 

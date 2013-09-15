@@ -11,8 +11,8 @@ public class Regex {
     private static Logger log = Logger.getLogger(Regex.class.getName());
     private String string = null;
     private String enemy = null;
-    private WeatherActionsSingleton gah = WeatherActionsSingleton.INSTANCE;
-
+    private Deque<GameAction> dq = new ArrayDeque<>();
+    
     public Regex() {
     }
 
@@ -22,9 +22,10 @@ public class Regex {
         string = regexMatcher.replaceAll(""); // *3 ??
     }
 
-    public void parse(String string) {
+    public Deque<GameAction> parse(String string) {
         this.string = string;
         ifs();
+        return dq;
     }
 
     private void ifs() {
@@ -38,17 +39,13 @@ public class Regex {
             backstab();
         }
         if (string.contains("Enter 3-letter city code:")) {
-            WeatherAction washingtonDC = new WeatherAction("dca");
-            Deque<WeatherAction> weather = new ArrayDeque<>();
-            weather.add(washingtonDC);
-            gah.addActions(weather);
+            GameAction washingtonDC = new GameAction("dca");
+            dq.add(washingtonDC);
         }
     }
 
     private void backstab() {
-        WeatherAction backstab = new WeatherAction("backstab " + enemy);
-        Deque<WeatherAction> weather = new ArrayDeque<>();
-        weather.add(backstab);
-        gah.addActions(weather);
+        GameAction backstab = new GameAction("backstab " + enemy);
+        dq.add(backstab);
     }
 }

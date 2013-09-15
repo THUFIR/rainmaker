@@ -8,11 +8,11 @@ public enum Flag {
     BACKSTAB() {
 
         @Override
-        Deque<WeatherAction> getActionsForState() {
-            Deque<WeatherAction> actions = new ArrayDeque<>();
+        Deque<GameAction> getActionsForState() {
+            Deque<GameAction> actions = new ArrayDeque<>();
             return actions;
         }
     };
 
-    abstract Deque<WeatherAction> getActionsForState();
+    abstract Deque<GameAction> getActionsForState();
 }
