@@ -1,4 +1,4 @@
-package weather;
+package player;
 
 public class GameAction {
 

@@ -9,17 +9,17 @@ import java.util.Observable;
 import java.util.Observer;
 import java.util.logging.Logger;
 import org.apache.commons.net.telnet.TelnetClient;
-import weather.GameAction;
-import weather.Player;
-import weather.Regex;
+import player.GameAction;
+import player.DataFromRegex;
+import player.Regex;
 
 public class TelnetConnection implements Observer {
 
     private static Logger log = Logger.getLogger(TelnetConnection.class.getName());
     private TelnetClient telnetClient = new TelnetClient();
     private InputOutput inputOutput = new InputOutput();
-    private Regex rx = new Regex();
-    private Player player = null;
+    private Regex regexParser = new Regex();
+    private DataFromRegex data = null;
     private Logic logic = new Logic();
 
     public TelnetConnection() {
@@ -64,8 +64,8 @@ public class TelnetConnection implements Observer {
         if (o instanceof InputOutput) {
             line = inputOutput.getLine();
             log.fine(line);
-            player = rx.parse(line);
-            Deque<GameAction> gameActions = logic.getActions(player);
+            data = regexParser.parse(line);
+            Deque<GameAction> gameActions = logic.getActions(data);
             sendActions(gameActions);
         }
     }

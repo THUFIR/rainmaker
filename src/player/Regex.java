@@ -1,4 +1,4 @@
-package weather;
+package player;
 
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
@@ -8,8 +8,7 @@ public class Regex {
 
     private static Logger log = Logger.getLogger(Regex.class.getName());
     private String string = null;
-    private String enemy = null;
-    private Player player = null;
+    private DataFromRegex data = null;
 
     public Regex() {
     }
@@ -20,26 +19,29 @@ public class Regex {
         string = regexMatcher.replaceAll(""); // *3 ??
     }
 
-    public Player parse(String string) {
+    public DataFromRegex parse(String string) {
         this.string = string;
         ifs();
-        return player;
+        log.fine(data.toString());
+        return data;
     }
 
+    //       [\w]+(?=\.) 
     private void ifs() {
         log.fine("checking..");
         if (string.contains("confusing the hell out of")) {
-            Pattern pattern = Pattern.compile("(\\w+)");  //(\w+)\.
+            Pattern pattern = Pattern.compile("[\\w]+(?=\\.)");  //(\w+)\.
             Matcher matcher = pattern.matcher(string);
+            String enemy = null;
             while (matcher.find()) {
                 enemy = matcher.group();
                 log.fine(enemy);
+                data = new DataFromRegex.Builder().enemy(enemy).build();
             }
-            player = new Player.Builder().enemy(enemy).build();
         } else if (string.contains("Enter 3-letter city code:")) {
             log.fine("found enter city code");
         } else {
-            player = null;
+            data = new DataFromRegex.Builder().enemy("null enemy!!!").build();
         }
     }
 }

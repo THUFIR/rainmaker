@@ -1,6 +1,6 @@
 package telnet;
 
-import weather.Regex;
+import player.Regex;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
