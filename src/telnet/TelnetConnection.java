@@ -28,8 +28,8 @@ public class TelnetConnection implements Observer {
 
     private void init() {
         try {
-            int port = 6789;
-            InetAddress host = InetAddress.getByName("dune.servint.com");
+            int port = 3000;
+            InetAddress host = InetAddress.getByName("rainmaker.wunderground.com");
             telnetClient.connect(host, port);
             inputOutput.readWriteParse(telnetClient.getInputStream(), telnetClient.getOutputStream());
         } catch (SocketException ex) {
