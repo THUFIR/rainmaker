@@ -10,18 +10,15 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
-import java.util.ArrayDeque;
-import java.util.Deque;
 import java.util.Observable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.commons.io.output.TeeOutputStream;
-import weather.GameAction;
 
 public class InputOutput extends Observable {
 
     private static final Logger log = Logger.getLogger(InputOutput.class.getName());
-    private Deque<GameAction> dq = new ArrayDeque<>();
+    private String line = null;
 
     public InputOutput() {
     }
@@ -63,7 +60,7 @@ public class InputOutput extends Observable {
                         //logToFile(ch);
                         sb.append(ch);
                         if (intVal == 13) {
-                            dq = rx.parse(sb.toString());
+                            line = sb.toString();
                             sb = new StringBuilder();
                             setChanged();
                             notifyObservers();
@@ -104,11 +101,7 @@ public class InputOutput extends Observable {
 
     }
 
-    Deque<GameAction> getGameActions() {
-        return dq;
-    }
-
-    void reset() {
-        dq = new ArrayDeque<>();
+    public String getLine() {
+        return line;
     }
 }

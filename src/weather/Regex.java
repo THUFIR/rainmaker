@@ -12,7 +12,8 @@ public class Regex {
     private String string = null;
     private String enemy = null;
     private Deque<GameAction> dq = new ArrayDeque<>();
-    
+    private Player player = null;
+
     public Regex() {
     }
 
@@ -29,23 +30,24 @@ public class Regex {
     }
 
     private void ifs() {
+        log.fine("checking..");
         if (string.contains("confusing the hell out of")) {
             Pattern pattern = Pattern.compile("(\\w+)");  //(\w+)\.
             Matcher matcher = pattern.matcher(string);
             while (matcher.find()) {
                 enemy = matcher.group();
-                log.info(enemy);
+                log.fine(enemy);
             }
-            backstab();
+            player = new Player.Builder().enemy(enemy).build();
         }
         if (string.contains("Enter 3-letter city code:")) {
+            log.fine("found enter city code");
             GameAction washingtonDC = new GameAction("dca");
             dq.add(washingtonDC);
         }
     }
 
-    private void backstab() {
-        GameAction backstab = new GameAction("backstab " + enemy);
-        dq.add(backstab);
+    public Player getPlayer() {
+        return player;
     }
 }

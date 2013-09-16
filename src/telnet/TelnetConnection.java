@@ -4,18 +4,20 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.InetAddress;
 import java.net.SocketException;
-import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.Observable;
 import java.util.Observer;
+import java.util.logging.Logger;
 import org.apache.commons.net.telnet.TelnetClient;
 import weather.GameAction;
+import weather.Regex;
 
 public class TelnetConnection extends Observable implements Observer {
 
+    private static Logger log = Logger.getLogger(TelnetConnection.class.getName());
     private TelnetClient telnetClient = new TelnetClient();
     private InputOutput inputOutput = new InputOutput();
-    private Deque<GameAction> gameActions = new ArrayDeque<>();
+    private Regex rx = new Regex();
 
     public TelnetConnection() {
         init();
@@ -23,8 +25,8 @@ public class TelnetConnection extends Observable implements Observer {
 
     private void init() {
         try {
-            int port = 3000;
-            InetAddress host = InetAddress.getByName("rainmaker.wunderground.com");
+            int port = 6789;
+            InetAddress host = InetAddress.getByName("dune.servint.com");
             telnetClient.connect(host, port);
             inputOutput.readWriteParse(telnetClient.getInputStream(), telnetClient.getOutputStream());
         } catch (SocketException ex) {
@@ -33,21 +35,39 @@ public class TelnetConnection extends Observable implements Observer {
         inputOutput.addObserver(this);
     }
 
-    @Override
-    public void update(Observable o, Object arg) {
-        if (o instanceof InputOutput) {
-            setChanged();
-            notifyObservers();
-            gameActions = inputOutput.getGameActions();
-            inputOutput.reset();
+    private void sendAction(GameAction action) throws IOException {
+        log.info(action.toString());
+        byte[] actionBytes = action.getAction().getBytes();
+        OutputStream outputStream = telnetClient.getOutputStream();
+        outputStream.write(actionBytes);
+        outputStream.write(13);
+        outputStream.write(10);
+        outputStream.flush();
+    }
+
+    private void sendActions(Deque<GameAction> gameActions) {
+        while (!gameActions.isEmpty()) {
+            GameAction action = gameActions.remove();
+            try {
+                sendAction(action);
+            } catch (IOException ex) {
+            }
         }
     }
 
-    public Deque<GameAction> getGameActions() {
-        return gameActions;
+    @Override
+    public void update(Observable o, Object arg) {
+        String line = null;
+        if (o instanceof InputOutput) {
+            line = inputOutput.getLine();
+            log.fine(line);
+            Deque<GameAction> gameActions = rx.parse(line);
+            log.fine(gameActions.toString());
+            sendActions(gameActions);
+        }
     }
 
-    OutputStream getOutputStream() {
-        return telnetClient.getOutputStream();
+    public static void main(String[] args) {
+        new TelnetConnection();
     }
 }
