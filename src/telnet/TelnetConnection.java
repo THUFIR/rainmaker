@@ -1,5 +1,6 @@
 package telnet;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.InetAddress;
@@ -7,10 +8,11 @@ import java.net.SocketException;
 import java.util.Deque;
 import java.util.Observable;
 import java.util.Observer;
+import java.util.Properties;
 import java.util.logging.Logger;
 import org.apache.commons.net.telnet.TelnetClient;
 import player.GameAction;
-import player.DataFromRegex;
+import player.GameData;
 import player.TelnetParser;
 
 public class TelnetConnection implements Observer {
@@ -22,18 +24,20 @@ public class TelnetConnection implements Observer {
     private Logic logic = new Logic();
 
     public TelnetConnection() {
-        init();
-    }
-
-    private void init() {
         try {
-            int port = 3000;
-            InetAddress host = InetAddress.getByName("rainmaker.wunderground.com");
-            telnetClient.connect(host, port);
-            inputOutput.readWriteParse(telnetClient.getInputStream(), telnetClient.getOutputStream());
+            init();
         } catch (SocketException ex) {
+        } catch (FileNotFoundException ex) {
         } catch (IOException ex) {
         }
+    }
+
+    private void init() throws SocketException, FileNotFoundException, IOException {
+        Properties props = PropertiesReader.getProps();
+        InetAddress host = InetAddress.getByName(props.getProperty("host"));
+        int port = Integer.parseInt(props.getProperty("port"));
+        telnetClient.connect(host, port);
+        inputOutput.readWriteParse(telnetClient.getInputStream(), telnetClient.getOutputStream());
         inputOutput.addObserver(this);
     }
 
@@ -59,14 +63,15 @@ public class TelnetConnection implements Observer {
 
     @Override
     public void update(Observable o, Object arg) {
-        DataFromRegex data = null;
+        GameData data = null;
         String line = null;
         if (o instanceof InputOutput) {
             line = arg.toString();
             parser.parse(line);
         } else if (o instanceof TelnetParser) {
-            data = (DataFromRegex) arg;
-            log.info("hmm");
+            log.info("trying..");
+            data = (GameData) arg;
+            log.info("hmm, never get here");
             Deque<GameAction> gameActions = logic.getActions(data);
             sendActions(gameActions);
         }

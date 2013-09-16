@@ -4,7 +4,7 @@ import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.logging.Logger;
 import player.GameAction;
-import player.DataFromRegex;
+import player.GameData;
 
 public class Logic {
 
@@ -13,7 +13,7 @@ public class Logic {
     public Logic() {
     }
 
-    public Deque<GameAction> getActions(DataFromRegex data) {
+    public Deque<GameAction> getActions(GameData data) {
         Deque<GameAction> dq = new ArrayDeque<>();
         if (data != null) {
             log.fine(data.getEnemy());
