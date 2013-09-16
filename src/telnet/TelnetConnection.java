@@ -10,14 +10,17 @@ import java.util.Observer;
 import java.util.logging.Logger;
 import org.apache.commons.net.telnet.TelnetClient;
 import weather.GameAction;
+import weather.Player;
 import weather.Regex;
 
-public class TelnetConnection extends Observable implements Observer {
+public class TelnetConnection implements Observer {
 
     private static Logger log = Logger.getLogger(TelnetConnection.class.getName());
     private TelnetClient telnetClient = new TelnetClient();
     private InputOutput inputOutput = new InputOutput();
     private Regex rx = new Regex();
+    private Player player = null;
+    private Logic logic = new Logic();
 
     public TelnetConnection() {
         init();
@@ -61,8 +64,8 @@ public class TelnetConnection extends Observable implements Observer {
         if (o instanceof InputOutput) {
             line = inputOutput.getLine();
             log.fine(line);
-            Deque<GameAction> gameActions = rx.parse(line);
-            log.fine(gameActions.toString());
+            player = rx.parse(line);
+            Deque<GameAction> gameActions = logic.getActions(player);
             sendActions(gameActions);
         }
     }
@@ -70,4 +73,5 @@ public class TelnetConnection extends Observable implements Observer {
     public static void main(String[] args) {
         new TelnetConnection();
     }
+
 }

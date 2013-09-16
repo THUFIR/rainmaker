@@ -1,7 +1,5 @@
 package weather;
 
-import java.util.ArrayDeque;
-import java.util.Deque;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -11,7 +9,6 @@ public class Regex {
     private static Logger log = Logger.getLogger(Regex.class.getName());
     private String string = null;
     private String enemy = null;
-    private Deque<GameAction> dq = new ArrayDeque<>();
     private Player player = null;
 
     public Regex() {
@@ -23,10 +20,10 @@ public class Regex {
         string = regexMatcher.replaceAll(""); // *3 ??
     }
 
-    public Deque<GameAction> parse(String string) {
+    public Player parse(String string) {
         this.string = string;
         ifs();
-        return dq;
+        return player;
     }
 
     private void ifs() {
@@ -39,15 +36,10 @@ public class Regex {
                 log.fine(enemy);
             }
             player = new Player.Builder().enemy(enemy).build();
-        }
-        if (string.contains("Enter 3-letter city code:")) {
+        } else if (string.contains("Enter 3-letter city code:")) {
             log.fine("found enter city code");
-            GameAction washingtonDC = new GameAction("dca");
-            dq.add(washingtonDC);
+        } else {
+            player = null;
         }
-    }
-
-    public Player getPlayer() {
-        return player;
     }
 }

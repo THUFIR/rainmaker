@@ -22,4 +22,8 @@ public class Player {
 
     private Player(Builder builder) {
     }
+
+    public String getEnemy() {
+        return enemy;
+    }
 }
