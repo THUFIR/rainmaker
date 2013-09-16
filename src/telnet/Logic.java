@@ -16,8 +16,8 @@ public class Logic {
     public Deque<GameAction> getActions(GameData data) {
         Deque<GameAction> dq = new ArrayDeque<>();
         if (data != null) {
-            log.fine(data.getEnemy());
-            if (data.getEnemy() == "bob") {
+            log.info(data.getEnemy());
+                log.info("found bob");
                 GameAction b = new GameAction("backstab " + data.getEnemy());
                 GameAction h = new GameAction("heartplunge");
                 GameAction e = new GameAction("enervate");
@@ -26,9 +26,8 @@ public class Logic {
                 dq.add(h);
                 dq.add(e);
                 dq.add(c);
-            }
         }
-        log.fine(dq.toString());
+        log.info(dq.toString());
         return dq;
     }
 }

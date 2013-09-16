@@ -39,6 +39,7 @@ public class TelnetConnection implements Observer {
         telnetClient.connect(host, port);
         inputOutput.readWriteParse(telnetClient.getInputStream(), telnetClient.getOutputStream());
         inputOutput.addObserver(this);
+        parser.addObserver(this);
     }
 
     private void sendAction(GameAction action) throws IOException {
@@ -69,9 +70,10 @@ public class TelnetConnection implements Observer {
             line = arg.toString();
             parser.parse(line);
         } else if (o instanceof TelnetParser) {
-            log.info("trying..");
+            log.fine("trying..");
             data = (GameData) arg;
-            log.info("hmm, never get here");
+            log.fine("hmm, never get here");
+            log.fine(data.getEnemy());
             Deque<GameAction> gameActions = logic.getActions(data);
             sendActions(gameActions);
         }
