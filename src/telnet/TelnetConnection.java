@@ -1,7 +1,5 @@
 package telnet;
 
-
-
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.InetAddress;
@@ -13,15 +11,11 @@ import java.util.Observer;
 import org.apache.commons.net.telnet.TelnetClient;
 import weather.GameAction;
 
-public class TelnetConnection implements Observer {
+public class TelnetConnection extends Observable implements Observer {
 
     private TelnetClient telnetClient = new TelnetClient();
     private InputOutput inputOutput = new InputOutput();
     private Deque<GameAction> gameActions = new ArrayDeque<>();
-
-    public static void main(String[] args) {
-        new TelnetConnection();
-    }
 
     public TelnetConnection() {
         init();
@@ -39,30 +33,21 @@ public class TelnetConnection implements Observer {
         inputOutput.addObserver(this);
     }
 
-    private void sendAction(GameAction action) throws IOException {
-        byte[] actionBytes = action.getAction().getBytes();
-        OutputStream outputStream = telnetClient.getOutputStream();
-        outputStream.write(actionBytes);
-        outputStream.write(13);
-        outputStream.write(10);
-        outputStream.flush();
-    }
-
-    private void sendActions() {
-        while (!gameActions.isEmpty()) {
-            GameAction action = gameActions.remove();
-            try {
-                sendAction(action);
-            } catch (IOException ex) {
-            }
-        }
-    }
-
     @Override
     public void update(Observable o, Object arg) {
         if (o instanceof InputOutput) {
+            setChanged();
+            notifyObservers();
             gameActions = inputOutput.getGameActions();
             inputOutput.reset();
         }
+    }
+
+    public Deque<GameAction> getGameActions() {
+        return gameActions;
+    }
+
+    OutputStream getOutputStream() {
+        return telnetClient.getOutputStream();
     }
 }
