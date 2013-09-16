@@ -11,15 +11,14 @@ import java.util.logging.Logger;
 import org.apache.commons.net.telnet.TelnetClient;
 import player.GameAction;
 import player.DataFromRegex;
-import player.Regex;
+import player.TelnetParser;
 
 public class TelnetConnection implements Observer {
 
     private static Logger log = Logger.getLogger(TelnetConnection.class.getName());
     private TelnetClient telnetClient = new TelnetClient();
     private InputOutput inputOutput = new InputOutput();
-    private Regex regexParser = new Regex();
-    private DataFromRegex data = null;
+    private TelnetParser parser = new TelnetParser();
     private Logic logic = new Logic();
 
     public TelnetConnection() {
@@ -60,11 +59,14 @@ public class TelnetConnection implements Observer {
 
     @Override
     public void update(Observable o, Object arg) {
+        DataFromRegex data = null;
         String line = null;
         if (o instanceof InputOutput) {
-            line = inputOutput.getLine();
-            log.fine(line);
-            data = regexParser.parse(line);
+            line = arg.toString();
+            parser.parse(line);
+        } else if (o instanceof TelnetParser) {
+            data = (DataFromRegex) arg;
+            log.info("hmm");
             Deque<GameAction> gameActions = logic.getActions(data);
             sendActions(gameActions);
         }
@@ -73,5 +75,4 @@ public class TelnetConnection implements Observer {
     public static void main(String[] args) {
         new TelnetConnection();
     }
-
 }

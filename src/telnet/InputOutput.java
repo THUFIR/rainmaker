@@ -1,6 +1,6 @@
 package telnet;
 
-import player.Regex;
+import player.TelnetParser;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -18,7 +18,6 @@ import org.apache.commons.io.output.TeeOutputStream;
 public class InputOutput extends Observable {
 
     private static final Logger log = Logger.getLogger(InputOutput.class.getName());
-    private String line = null;
 
     public InputOutput() {
     }
@@ -51,7 +50,7 @@ public class InputOutput extends Observable {
                 char ch = 0;
                 int intVal = 0;
                 StringBuilder sb = new StringBuilder();
-                Regex rx = new Regex();
+                TelnetParser rx = new TelnetParser();
 
                 try {
                     while ((intVal = inputStream.read()) != -1) {
@@ -60,10 +59,9 @@ public class InputOutput extends Observable {
                         //logToFile(ch);
                         sb.append(ch);
                         if (intVal == 13) {
-                            line = sb.toString();
-                            sb = new StringBuilder();
                             setChanged();
-                            notifyObservers();
+                            notifyObservers(sb.toString());
+                            sb = new StringBuilder();
                         }
                     }
                 } catch (IOException ex) {
@@ -99,9 +97,5 @@ public class InputOutput extends Observable {
     private void tee(FileOutputStream fos) {
         TeeOutputStream tee = new TeeOutputStream(System.out, fos);
 
-    }
-
-    public String getLine() {
-        return line;
     }
 }
