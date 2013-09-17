@@ -1,7 +1,6 @@
 package telnet;
 
-import java.io.BufferedReader;
-import player.TelnetParser;
+import player.TelnetEventProcessor;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -9,10 +8,10 @@ import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.Observable;
+import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.commons.io.output.TeeOutputStream;
@@ -20,6 +19,7 @@ import org.apache.commons.io.output.TeeOutputStream;
 public class InputOutput extends Observable {
 
     private static final Logger log = Logger.getLogger(InputOutput.class.getName());
+    private Alias a = new Alias();
 
     public InputOutput() {
     }
@@ -31,14 +31,23 @@ public class InputOutput extends Observable {
             public void run() {
                 String line;
                 byte[] bytes;
-                BufferedReader buffer = new BufferedReader(new InputStreamReader(System.in));
+                Scanner scanner;
                 while (true) {
+                    scanner = new Scanner(System.in);
+                    line = scanner.nextLine();
                     try {
-                        line = buffer.readLine();
-                        log.info(line);
-                        bytes = line.getBytes();
+                        line = a.parse(line);
+                    } catch (StringIndexOutOfBoundsException e) {
+                        log.fine(line);
+                    }
+                    log.fine(line);
+                    bytes = line.getBytes();
+                    try {
                         outputStream.write(bytes);
+                        outputStream.write(10);
+                        outputStream.flush();
                     } catch (IOException ex) {
+                        log.info(ex.toString());
                     }
                 }
             }
@@ -54,7 +63,7 @@ public class InputOutput extends Observable {
                 char ch = 0;
                 int intVal = 0;
                 StringBuilder sb = new StringBuilder();
-                TelnetParser rx = new TelnetParser();
+                TelnetEventProcessor rx = new TelnetEventProcessor();
 
                 try {
                     while ((intVal = inputStream.read()) != -1) {

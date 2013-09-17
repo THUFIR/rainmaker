@@ -13,14 +13,14 @@ import java.util.logging.Logger;
 import org.apache.commons.net.telnet.TelnetClient;
 import player.GameAction;
 import player.GameData;
-import player.TelnetParser;
+import player.TelnetEventProcessor;
 
 public class TelnetConnection implements Observer {
 
     private static Logger log = Logger.getLogger(TelnetConnection.class.getName());
     private TelnetClient telnetClient = new TelnetClient();
     private InputOutput inputOutput = new InputOutput();
-    private TelnetParser parser = new TelnetParser();
+    private TelnetEventProcessor parser = new TelnetEventProcessor();
     private Logic logic = new Logic();
 
     public TelnetConnection() {
@@ -69,7 +69,7 @@ public class TelnetConnection implements Observer {
         if (o instanceof InputOutput) {
             line = arg.toString();
             parser.parse(line);
-        } else if (o instanceof TelnetParser) {
+        } else if (o instanceof TelnetEventProcessor) {
             data = (GameData) arg;
             Deque<GameAction> gameActions = logic.getActions(data);
             sendActions(gameActions);
