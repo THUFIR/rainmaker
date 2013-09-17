@@ -13,24 +13,30 @@ public class Alias {
     public Alias() {
     }
 
-    public String parse(String line) throws StringIndexOutOfBoundsException {
+    public AliasTarget parse(String line) throws StringIndexOutOfBoundsException {
+        AliasTarget t = new AliasTarget("nobody");
         char c = line.charAt(0);
         String s = String.valueOf(c);
         if ("/".equals(s)) {
-            line = getAlias(line);
+            t = getAlias(line);
         }
-        return line;
+        return t;
     }
 
-    private String getAlias(String line) {
-        Pattern pattern = Pattern.compile("(\\w+)");  //(\w+)\.
+    private AliasTarget getAlias(String line) {
+        AliasTarget t = new AliasTarget("nobody");
+        Pattern pattern = Pattern.compile("(\\w+)");
         Matcher matcher = pattern.matcher(line);
         List<String> strings = new ArrayList<>();
         while (matcher.find()) {
             strings.add(matcher.group());
         }
-        AliasTarget t = new AliasTarget(strings.get(strings.size()-1));
-        log.info(t.toString());
-        return "";
+        if (1 < strings.size()) {
+            if ("t".equals(strings.get(0))) {
+                t = new AliasTarget(strings.get(strings.size() - 1));
+                log.info(t.toString());
+            }
+        }
+        return t;
     }
 }

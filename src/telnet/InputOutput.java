@@ -32,11 +32,15 @@ public class InputOutput extends Observable {
                 String line;
                 byte[] bytes;
                 Scanner scanner;
+                AliasTarget aliasTarget = new AliasTarget("nobody");
                 while (true) {
                     scanner = new Scanner(System.in);
                     line = scanner.nextLine();
                     try {
-                        line = a.parse(line);
+                        aliasTarget = a.parse(line);
+                        setChanged();
+                        notifyObservers(aliasTarget);
+                        log.fine("sent\n" + aliasTarget.toString());
                     } catch (StringIndexOutOfBoundsException e) {
                         log.fine(line);
                     }
@@ -47,7 +51,7 @@ public class InputOutput extends Observable {
                         outputStream.write(10);
                         outputStream.flush();
                     } catch (IOException ex) {
-                        log.info(ex.toString());
+                        log.fine(ex.toString());
                     }
                 }
             }

@@ -66,13 +66,23 @@ public class TelnetConnection implements Observer {
     public void update(Observable o, Object arg) {
         GameData data = null;
         String line = null;
+        AliasTarget aliasTarget = null;
         if (o instanceof InputOutput) {
-            line = arg.toString();
-            parser.parse(line);
+            if (arg instanceof String) {
+                line = arg.toString();
+                parser.parse(line);
+            } else if (arg instanceof AliasTarget) {
+                aliasTarget = (AliasTarget) arg;
+                log.info("target\n" + aliasTarget.toString());
+            } 
         } else if (o instanceof TelnetEventProcessor) {
-            data = (GameData) arg;
-            Deque<GameAction> gameActions = logic.getActions(data);
-            sendActions(gameActions);
+            if (arg instanceof GameData) {
+                data = (GameData) arg;
+                Deque<GameAction> gameActions = logic.getActions(data);
+                sendActions(gameActions);
+            } else {
+                log.info("unknown arg");
+            }
         }
     }
 
