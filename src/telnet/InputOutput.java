@@ -1,5 +1,6 @@
 package telnet;
 
+import java.io.BufferedReader;
 import player.TelnetParser;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -8,6 +9,7 @@ import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.Observable;
@@ -27,15 +29,17 @@ public class InputOutput extends Observable {
 
             @Override
             public void run() {
-                int ch;
-
-                try {
-                    while ((ch = System.in.read()) != -1) {
-                        outputStream.write(ch);
-                        outputStream.flush();
+                String line;
+                byte[] bytes;
+                BufferedReader buffer = new BufferedReader(new InputStreamReader(System.in));
+                while (true) {
+                    try {
+                        line = buffer.readLine();
+                        log.info(line);
+                        bytes = line.getBytes();
+                        outputStream.write(bytes);
+                    } catch (IOException ex) {
                     }
-                } catch (IOException ioe) {
-                    log.warning(ioe.toString());
                 }
             }
         };

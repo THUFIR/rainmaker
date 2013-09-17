@@ -43,7 +43,7 @@ public class TelnetConnection implements Observer {
     }
 
     private void sendAction(GameAction action) throws IOException {
-        log.info(action.toString());
+        log.fine(action.toString());
         byte[] actionBytes = action.getAction().getBytes();
         OutputStream outputStream = telnetClient.getOutputStream();
         outputStream.write(actionBytes);
@@ -70,10 +70,7 @@ public class TelnetConnection implements Observer {
             line = arg.toString();
             parser.parse(line);
         } else if (o instanceof TelnetParser) {
-            log.fine("trying..");
             data = (GameData) arg;
-            log.fine("hmm, never get here");
-            log.fine(data.getEnemy());
             Deque<GameAction> gameActions = logic.getActions(data);
             sendActions(gameActions);
         }
