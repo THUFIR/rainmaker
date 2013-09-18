@@ -68,15 +68,16 @@ public class TelnetConnection implements Observer {
         GameData data = null;
         String line = null;
         TargetStrategy targetStrategy = null;
+        Deque<GameAction> gameActions;
         if (o instanceof InputOutput) {
             if (arg instanceof String) {
                 line = arg.toString();
                 parser.parse(line);
             } else if (arg instanceof TargetStrategy) {
                 targetStrategy = (TargetStrategy) arg;
-                log.fine("target\n" + targetStrategy.toString());
                 logic = new LogicalContext(targetStrategy);
-                logic.executeStrategy();
+                gameActions = logic.executeStrategy();
+                sendActions(gameActions);
             } else {
                 log.info("not a i/o arg");
             }
@@ -84,7 +85,7 @@ public class TelnetConnection implements Observer {
             if (arg instanceof GameData) {
                 log.info("game data arg");
                 data = (GameData) arg;
-                Deque<GameAction> gameActions = logic.executeStrategy();
+                gameActions = logic.executeStrategy();
                 sendActions(gameActions);
             } else {
                 log.info("not a telnetevent arg");

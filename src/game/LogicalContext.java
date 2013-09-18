@@ -20,13 +20,12 @@ public class LogicalContext {
     }
 
     public Deque<GameAction> executeStrategy() {
-        //strategy.execute
+        log.info(strategy.toString());
         Deque<GameAction> deque = new ArrayDeque<>();
-        log.fine("found bob");
         GameAction backstab = new GameAction("backstab " + strategy.execute());
-        GameAction confuse = new GameAction("confuse");
-        GameAction heartplunge = new GameAction("heartplunge");
-        GameAction enervate = new GameAction("enervate");
+        GameAction confuse = new GameAction("confuse " + strategy.execute());
+        GameAction heartplunge = new GameAction("heartplunge " + strategy.execute());
+        GameAction enervate = new GameAction("enervate " + strategy.execute());
         deque.add(backstab);
         deque.add(confuse);
         deque.add(heartplunge);
