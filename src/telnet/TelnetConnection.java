@@ -1,5 +1,6 @@
 package telnet;
 
+import game.LogicalContext;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -11,9 +12,9 @@ import java.util.Observer;
 import java.util.Properties;
 import java.util.logging.Logger;
 import org.apache.commons.net.telnet.TelnetClient;
-import player.GameAction;
-import player.GameData;
-import player.TelnetEventProcessor;
+import model.GameAction;
+import model.GameData;
+import model.TelnetEventProcessor;
 
 public class TelnetConnection implements Observer {
 
@@ -21,7 +22,7 @@ public class TelnetConnection implements Observer {
     private TelnetClient telnetClient = new TelnetClient();
     private InputOutput inputOutput = new InputOutput();
     private TelnetEventProcessor parser = new TelnetEventProcessor();
-    private Logic logic = new Logic();
+    private LogicalContext logic;// = new LogicalContext();
 
     public TelnetConnection() {
         try {
@@ -66,22 +67,28 @@ public class TelnetConnection implements Observer {
     public void update(Observable o, Object arg) {
         GameData data = null;
         String line = null;
-        AliasTarget aliasTarget = null;
+        TargetStrategy aliasTarget = null;
         if (o instanceof InputOutput) {
             if (arg instanceof String) {
                 line = arg.toString();
                 parser.parse(line);
-            } else if (arg instanceof AliasTarget) {
-                aliasTarget = (AliasTarget) arg;
-                log.info("target\n" + aliasTarget.toString());
-            } 
+            } else if (arg instanceof TargetStrategy) {
+                aliasTarget = (TargetStrategy) arg;
+                log.fine("target\n" + aliasTarget.toString());
+                //logic.setTarget(aliasTarget);
+                logic = new LogicalContext(aliasTarget);
+                logic.executeStrategy();
+            } else {
+                log.info("not a i/o arg");
+            }
         } else if (o instanceof TelnetEventProcessor) {
             if (arg instanceof GameData) {
+                log.info("game data arg");
                 data = (GameData) arg;
                 Deque<GameAction> gameActions = logic.getActions(data);
                 sendActions(gameActions);
             } else {
-                log.info("unknown arg");
+                log.info("not a telnetevent arg");
             }
         }
     }

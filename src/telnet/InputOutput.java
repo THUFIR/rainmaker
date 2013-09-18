@@ -1,6 +1,6 @@
 package telnet;
 
-import player.TelnetEventProcessor;
+import model.TelnetEventProcessor;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -32,15 +32,18 @@ public class InputOutput extends Observable {
                 String line;
                 byte[] bytes;
                 Scanner scanner;
-                AliasTarget aliasTarget = new AliasTarget("nobody");
+                TargetStrategy aliasTarget = new TargetStrategy("nobody");
                 while (true) {
                     scanner = new Scanner(System.in);
                     line = scanner.nextLine();
                     try {
                         aliasTarget = a.parse(line);
-                        setChanged();
-                        notifyObservers(aliasTarget);
-                        log.fine("sent\n" + aliasTarget.toString());
+                        if (!"nobody".equals(aliasTarget.toString())) {
+                            setChanged();
+                            notifyObservers(aliasTarget);
+                            log.fine("sent\n" + aliasTarget.toString());
+                            line = "";
+                        }
                     } catch (StringIndexOutOfBoundsException e) {
                         log.fine(line);
                     }

@@ -13,8 +13,8 @@ public class Alias {
     public Alias() {
     }
 
-    public AliasTarget parse(String line) throws StringIndexOutOfBoundsException {
-        AliasTarget t = new AliasTarget("nobody");
+    public TargetStrategy parse(String line) throws StringIndexOutOfBoundsException {
+        TargetStrategy t = new TargetStrategy("nobody");
         char c = line.charAt(0);
         String s = String.valueOf(c);
         if ("/".equals(s)) {
@@ -23,8 +23,8 @@ public class Alias {
         return t;
     }
 
-    private AliasTarget getAlias(String line) {
-        AliasTarget t = new AliasTarget("nobody");
+    private TargetStrategy getAlias(String line) {
+        TargetStrategy t = new TargetStrategy("nobody");
         Pattern pattern = Pattern.compile("(\\w+)");
         Matcher matcher = pattern.matcher(line);
         List<String> strings = new ArrayList<>();
@@ -33,8 +33,8 @@ public class Alias {
         }
         if (1 < strings.size()) {
             if ("t".equals(strings.get(0))) {
-                t = new AliasTarget(strings.get(strings.size() - 1));
-                log.info(t.toString());
+                t = new TargetStrategy(strings.get(strings.size() - 1));
+                log.fine(t.toString());
             }
         }
         return t;
