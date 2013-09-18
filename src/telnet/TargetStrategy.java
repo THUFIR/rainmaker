@@ -21,7 +21,7 @@ public class TargetStrategy implements Strategy {
     }
 
     @Override
-    public void execute() {
-        log.info(target);
+    public String execute() {
+        return target;
     }
 }

@@ -2,6 +2,6 @@ package game;
 
 public interface Strategy {
 
-    public void execute();
+    public String execute();
     
 }

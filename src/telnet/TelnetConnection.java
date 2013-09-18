@@ -67,16 +67,15 @@ public class TelnetConnection implements Observer {
     public void update(Observable o, Object arg) {
         GameData data = null;
         String line = null;
-        TargetStrategy aliasTarget = null;
+        TargetStrategy targetStrategy = null;
         if (o instanceof InputOutput) {
             if (arg instanceof String) {
                 line = arg.toString();
                 parser.parse(line);
             } else if (arg instanceof TargetStrategy) {
-                aliasTarget = (TargetStrategy) arg;
-                log.fine("target\n" + aliasTarget.toString());
-                //logic.setTarget(aliasTarget);
-                logic = new LogicalContext(aliasTarget);
+                targetStrategy = (TargetStrategy) arg;
+                log.fine("target\n" + targetStrategy.toString());
+                logic = new LogicalContext(targetStrategy);
                 logic.executeStrategy();
             } else {
                 log.info("not a i/o arg");
@@ -85,7 +84,7 @@ public class TelnetConnection implements Observer {
             if (arg instanceof GameData) {
                 log.info("game data arg");
                 data = (GameData) arg;
-                Deque<GameAction> gameActions = logic.getActions(data);
+                Deque<GameAction> gameActions = logic.executeStrategy();
                 sendActions(gameActions);
             } else {
                 log.info("not a telnetevent arg");

@@ -10,7 +10,6 @@ import telnet.TargetStrategy;
 public class LogicalContext {
 
     private static Logger log = Logger.getLogger(LogicalContext.class.getName());
-    private TargetStrategy target;
     private Strategy strategy;
 
     private LogicalContext() {
@@ -20,30 +19,18 @@ public class LogicalContext {
         this.strategy = strategy;
     }
 
-    public Deque<GameAction> getActions(GameData data) {
-        Deque<GameAction> dq = new ArrayDeque<>();
-        if (data != null) {
-            log.info(data.getEnemy());
-            log.fine("found bob");
-            GameAction b = new GameAction("backstab " + target.toString());
-            GameAction h = new GameAction("heartplunge");
-            GameAction e = new GameAction("enervate");
-            GameAction c = new GameAction("confuse");
-            dq.add(b);
-            dq.add(h);
-            dq.add(e);
-            dq.add(c);
-        }
-        log.fine(dq.toString());
-        return dq;
-    }
-
-    void setTarget(TargetStrategy target) {
-        this.target = target;
-        log.info(target.toString());
-    }
-
-    public void executeStrategy() {
-        strategy.execute();
+    public Deque<GameAction> executeStrategy() {
+        //strategy.execute
+        Deque<GameAction> deque = new ArrayDeque<>();
+        log.fine("found bob");
+        GameAction backstab = new GameAction("backstab " + strategy.execute());
+        GameAction confuse = new GameAction("confuse");
+        GameAction heartplunge = new GameAction("heartplunge");
+        GameAction enervate = new GameAction("enervate");
+        deque.add(backstab);
+        deque.add(confuse);
+        deque.add(heartplunge);
+        deque.add(enervate);
+        return deque;
     }
 }
