@@ -14,14 +14,14 @@ public class Alias {
     public Alias() {
     }
 
-    public GameData parse(String line) throws StringIndexOutOfBoundsException {
-        GameData gd = null;
+    public GameData parseUserInput(String line) throws StringIndexOutOfBoundsException {
+        GameData gameData = null;
         char c = line.charAt(0);
         String s = String.valueOf(c);
         if ("/".equals(s)) {
-            gd = buildGameData(line);
+            gameData = buildGameData(line);
         }
-        return gd;
+        return gameData;
     }
 
     private GameData buildGameData(String line) {
@@ -33,9 +33,10 @@ public class Alias {
             strings.add(matcher.group());
         }
         if (1 < strings.size()) {
-            String enemy = strings.get(strings.size());
+            log.info(strings.toString());
             if ("t".equals(strings.get(0))) {
-                gd = new GameData.Builder().enemy(line).build();
+                String enemy = strings.get(strings.size() - 1);
+                gd = new GameData.Builder().enemy(enemy).build();
             }
         }
         return gd;

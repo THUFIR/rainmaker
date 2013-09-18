@@ -17,6 +17,7 @@ public class RulesForStrategy {
     public Context getContext() {
         context = new Context(new TargetStrategy());
         context.setGameData(gameData);
+        gameData = null;
         return context;
     }
 }

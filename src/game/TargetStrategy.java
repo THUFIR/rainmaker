@@ -13,18 +13,19 @@ public class TargetStrategy implements Strategy {
     public TargetStrategy() {
     }
 
-
     public String toString() {
         return "target";
     }
 
     @Override
     public Deque<GameAction> execute(GameData gameData) {
+        String enemy = gameData.getEnemy();
+        log.severe(enemy);
         Deque<GameAction> deque = new ArrayDeque<>();
-        GameAction backstab = new GameAction("backstab " + gameData.getEnemy());
-        GameAction confuse = new GameAction("confuse " + gameData.getEnemy());
-        GameAction heartplunge = new GameAction("heartplunge " + gameData.getEnemy());
-        GameAction enervate = new GameAction("enervate " + gameData.getEnemy());
+        GameAction backstab = new GameAction("backstab " + enemy);
+        GameAction confuse = new GameAction("confuse " + enemy);
+        GameAction heartplunge = new GameAction("heartplunge " + enemy);
+        GameAction enervate = new GameAction("enervate " + enemy);
         deque.add(backstab);
         deque.add(confuse);
         deque.add(heartplunge);

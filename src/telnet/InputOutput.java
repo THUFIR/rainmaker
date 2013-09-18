@@ -39,7 +39,11 @@ public class InputOutput extends Observable {
                 while (true) {
                     scanner = new Scanner(System.in);
                     line = scanner.nextLine();
-                    gameData = alias.parse(line);
+                    try {
+                        gameData = alias.parseUserInput(line);
+                    } catch (StringIndexOutOfBoundsException e) {
+                        log.info(e.toString());
+                    }
                     if (gameData != null) {
                         setChanged();
                         notifyObservers(gameData);
