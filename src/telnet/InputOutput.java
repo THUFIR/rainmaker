@@ -1,5 +1,6 @@
 package telnet;
 
+
 import game.Alias;
 import model.TelnetEventProcessor;
 import java.io.BufferedWriter;
@@ -114,7 +115,7 @@ public class InputOutput extends Observable {
         readInput(inputStream);
     }
 
-    //                TeeOutputStream tee = new TeeOutputStream(inputStream, bis);   
+    // TeeOutputStream tee = new TeeOutputStream(inputStream, bis);
     private void tee(FileOutputStream fos) {
         TeeOutputStream tee = new TeeOutputStream(System.out, fos);
 

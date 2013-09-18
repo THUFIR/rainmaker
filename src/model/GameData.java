@@ -1,5 +1,6 @@
 package model;
 
+import java.util.Locale;
 import java.util.logging.Logger;
 
 public class GameData {
@@ -8,7 +9,7 @@ public class GameData {
     private String enemy = null;
 
     private GameData(Builder builder) {
-        this.enemy = builder.enemy;
+        this.enemy = builder.enemy.toLowerCase();
         log.fine(enemy);
     }
 

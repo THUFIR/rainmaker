@@ -33,7 +33,7 @@ public class Alias {
             strings.add(matcher.group());
         }
         if (1 < strings.size()) {
-            log.info(strings.toString());
+            log.fine(strings.toString());
             if ("t".equals(strings.get(0))) {
                 String enemy = strings.get(strings.size() - 1);
                 gd = new GameData.Builder().enemy(enemy).build();

@@ -20,7 +20,7 @@ public class TargetStrategy implements Strategy {
     @Override
     public Deque<GameAction> execute(GameData gameData) {
         String enemy = gameData.getEnemy();
-        log.severe(enemy);
+        log.fine(enemy);
         Deque<GameAction> deque = new ArrayDeque<>();
         GameAction backstab = new GameAction("backstab " + enemy);
         GameAction confuse = new GameAction("confuse " + enemy);
