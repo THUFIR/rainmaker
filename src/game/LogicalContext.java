@@ -7,7 +7,6 @@ import model.GameAction;
 import model.GameData;
 import telnet.TargetStrategy;
 
-
 public class LogicalContext {
 
     private static Logger log = Logger.getLogger(LogicalContext.class.getName());
