@@ -1,5 +1,6 @@
 package telnet;
 
+import game.Alias;
 import model.TelnetEventProcessor;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -14,12 +15,13 @@ import java.util.Observable;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import model.GameData;
 import org.apache.commons.io.output.TeeOutputStream;
 
 public class InputOutput extends Observable {
 
     private static final Logger log = Logger.getLogger(InputOutput.class.getName());
-    private Alias a = new Alias();
+    private Alias alias = new Alias();
 
     public InputOutput() {
     }
@@ -32,29 +34,24 @@ public class InputOutput extends Observable {
                 String line;
                 byte[] bytes;
                 Scanner scanner;
-                TargetStrategy aliasTarget = new TargetStrategy("nobody");
+                //TargetStrategy aliasTarget = new TargetStrategy("nobody");
+                GameData gameData = null;
                 while (true) {
                     scanner = new Scanner(System.in);
                     line = scanner.nextLine();
-                    try {
-                        aliasTarget = a.parse(line);
-                        if (!"nobody".equals(aliasTarget.toString())) {
-                            setChanged();
-                            notifyObservers(aliasTarget);
-                            log.fine("sent\n" + aliasTarget.toString());
-                            line = "";
+                    gameData = alias.parse(line);
+                    if (gameData != null) {
+                        setChanged();
+                        notifyObservers(gameData);
+                    } else {
+                        bytes = line.getBytes();
+                        try {
+                            outputStream.write(bytes);
+                            outputStream.write(10);
+                            outputStream.flush();
+                        } catch (IOException ex) {
+                            log.fine(ex.toString());
                         }
-                    } catch (StringIndexOutOfBoundsException e) {
-                        log.fine(line);
-                    }
-                    log.fine(line);
-                    bytes = line.getBytes();
-                    try {
-                        outputStream.write(bytes);
-                        outputStream.write(10);
-                        outputStream.flush();
-                    } catch (IOException ex) {
-                        log.fine(ex.toString());
                     }
                 }
             }

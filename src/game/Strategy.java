@@ -1,7 +1,10 @@
 package game;
 
+import java.util.Deque;
+import model.GameAction;
+
 public interface Strategy {
 
-    public String execute();
+    public Deque<GameAction> execute();
     
 }

@@ -1,5 +1,6 @@
 package telnet;
 
+import game.TargetStrategy;
 import game.LogicalContext;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -67,15 +68,14 @@ public class TelnetConnection implements Observer {
     public void update(Observable o, Object arg) {
         GameData data = null;
         String line = null;
-        TargetStrategy targetStrategy = null;
         Deque<GameAction> gameActions;
         if (o instanceof InputOutput) {
             if (arg instanceof String) {
                 line = arg.toString();
                 parser.parse(line);
-            } else if (arg instanceof TargetStrategy) {
-                targetStrategy = (TargetStrategy) arg;
-                logic = new LogicalContext(targetStrategy);
+            } else if (arg instanceof GameData) {
+                data = (GameData) arg;
+                logic = new LogicalContext(new TargetStrategy(data));
                 gameActions = logic.executeStrategy();
                 sendActions(gameActions);
             } else {
