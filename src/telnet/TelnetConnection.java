@@ -23,6 +23,8 @@ public class TelnetConnection implements Observer {
     private TelnetClient telnetClient = new TelnetClient();
     private InputOutput inputOutput = new InputOutput();
     private TelnetEventProcessor parser = new TelnetEventProcessor();
+    private RulesForStrategy rules = null;
+    private Context context = null;
 
     public TelnetConnection() {
         try {
@@ -45,8 +47,6 @@ public class TelnetConnection implements Observer {
 
     private void sendAction(GameAction action) throws IOException {
         log.fine(action.toString());
-
-
         byte[] actionBytes = action.getAction().getBytes();
         OutputStream outputStream = telnetClient.getOutputStream();
         outputStream.write(actionBytes);
@@ -55,9 +55,9 @@ public class TelnetConnection implements Observer {
         outputStream.flush();
     }
 
-    private void executeStrategy(GameData data) {
-        RulesForStrategy rules = new RulesForStrategy(data);
-        Context context = rules.getContext();
+    private void newData(GameData data) {
+        rules = new RulesForStrategy(data);
+        context = rules.getContext();
         Deque<GameAction> gameActions = context.executeStrategy();
         while (!gameActions.isEmpty()) {
             GameAction action = gameActions.remove();
@@ -77,13 +77,13 @@ public class TelnetConnection implements Observer {
                 line = arg.toString();
                 parser.parse(line);
             } else if (arg instanceof GameData) {
-                executeStrategy((GameData) arg);
+                newData((GameData) arg);
             } else {
                 log.info("not a i/o arg");
             }
         } else if (o instanceof TelnetEventProcessor) {
             if (arg instanceof GameData) {
-                executeStrategy((GameData) arg);
+                newData((GameData) arg);
             } else {
                 log.info("not a telnetevent arg");
             }
