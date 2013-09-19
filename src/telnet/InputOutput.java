@@ -85,8 +85,6 @@ public class InputOutput extends Observable {
                 } catch (IOException ex) {
                     Logger.getLogger(InputOutput.class.getName()).log(Level.SEVERE, null, ex);
                 }
-
-
             }
 
             private void logToFile(char c) throws IOException {
