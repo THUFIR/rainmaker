@@ -76,17 +76,19 @@ public class TelnetConnection implements Observer {
                 line = arg.toString();
                 data = parser.parse(line);
                 if (data != null) {
-                    log.info("new data\t" + data.toString());  //triggers something...
-                    data = null;
+                    log.info("strange result\t" + data.toString());  //triggers something...
                 }
             } else if (arg instanceof GameData) {
+                log.info("new data from i/o");
                 newData((GameData) arg);
             } else {
                 log.info("not a i/o arg");
             }
         } else if (o instanceof TelnetEventProcessor) {
             if (arg instanceof GameData) {
-                newData((GameData) arg);
+                data = (GameData) arg;
+                log.info("new data from telnet event processor"+ data);
+                newData((GameData) data);
             } else {
                 log.info("not a telnetevent arg");
             }
