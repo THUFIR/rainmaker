@@ -70,8 +70,6 @@ public class InputOutput extends Observable {
                 char ch = 0;
                 int intVal = 0;
                 StringBuilder sb = new StringBuilder();
-                TelnetEventProcessor rx = new TelnetEventProcessor();
-
                 try {
                     while ((intVal = inputStream.read()) != -1) {
                         ch = (char) intVal;
