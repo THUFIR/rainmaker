@@ -11,7 +11,8 @@ public class GameData {
 
     private GameData(Builder builder) {
         this.enemy = builder.enemy.toLowerCase();
-        log.fine(enemy);
+        this.monitorMap = builder.monitorMap;
+        log.info("new data");
     }
 
     private GameData() {
@@ -33,20 +34,20 @@ public class GameData {
     public static class Builder {
 
         private String enemy = null;
-        private Map<String, String> monitorMap;
+        private Map<String, String> monitorMap = null;
 
         public Builder enemy(String enemy) {
             this.enemy = enemy;
             return this;
         }
 
-        public GameData build() {
-            return new GameData(this);
-        }
-
         public Builder monitorMap(Map<String, String> monitorMap) {
             this.monitorMap = monitorMap;
             return this;
+        }
+
+        public GameData build() {
+            return new GameData(this);
         }
     }
 }

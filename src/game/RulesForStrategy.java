@@ -1,18 +1,18 @@
 package game;
 
 import java.util.logging.Logger;
-import model.GameData;
+import model.GameDataBean;
 
 public class RulesForStrategy {
 
     private static Logger log = Logger.getLogger(RulesForStrategy.class.getName());
     private Context context = null;
-    private GameData gameData = null;
+    private GameDataBean gameData = null;
 
     private RulesForStrategy() {
     }
 
-    public RulesForStrategy(GameData gameData) {
+    public RulesForStrategy(GameDataBean gameData) {
         this.gameData = gameData;
     }
 

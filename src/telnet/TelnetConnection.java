@@ -14,7 +14,7 @@ import java.util.Properties;
 import java.util.logging.Logger;
 import org.apache.commons.net.telnet.TelnetClient;
 import model.GameAction;
-import model.GameData;
+import model.GameDataBean;
 
 public class TelnetConnection implements Observer {
 
@@ -54,7 +54,7 @@ public class TelnetConnection implements Observer {
         outputStream.flush();
     }
 
-    private void newData(GameData data) {
+    private void newData(GameDataBean data) {
         log.fine("new data?\t" + data + "\n end new data");
         if (data != null) {
             log.fine("not null data:\n" + data + "\nend new data");
@@ -78,8 +78,8 @@ public class TelnetConnection implements Observer {
             if (arg instanceof String) {
                 remoteLineFromGame = arg.toString();
                 newData(eventProcessor.parse(remoteLineFromGame));
-            } else if (arg instanceof GameData) {
-                newData((GameData) arg);
+            } else if (arg instanceof GameDataBean) {
+                newData((GameDataBean) arg);
             } else {
                 log.info("not a i/o arg");
             }
