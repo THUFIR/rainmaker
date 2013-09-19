@@ -45,7 +45,6 @@ public class InputOutput extends Observable {
                     if (gameData != null) {
                         setChanged();
                         notifyObservers(gameData);
-                        //gameData = null;
                     } else {
                         bytes = line.getBytes();
                         try {

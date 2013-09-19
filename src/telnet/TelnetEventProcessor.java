@@ -8,25 +8,23 @@ import model.GameData;
 public class TelnetEventProcessor {
 
     private static Logger log = Logger.getLogger(TelnetEventProcessor.class.getName());
-    private String string = null;
 
     public TelnetEventProcessor() {
     }
 
-    private void stripAnsiColors() {
+    private void stripAnsiColors(String input) {
         Pattern regex = Pattern.compile("\\e\\[[0-9;]*m");
-        Matcher regexMatcher = regex.matcher(string);
-        string = regexMatcher.replaceAll(""); // *3 ??
+        Matcher regexMatcher = regex.matcher(input);
+        String string = regexMatcher.replaceAll(""); // *3 ??
     }
 
-    public GameData parse(String string) {
-        this.string = string;
+    public GameData parse(String input) {
         //       [\w]+(?=\.) 
         log.fine("checking..");
         GameData gameData = null;
-        if (string.contains("confusing the hell out of")) {
+        if (input.contains("confusing the hell out of")) {
             Pattern pattern = Pattern.compile("[\\w]+(?=\\.)");  //(\w+)\.
-            Matcher matcher = pattern.matcher(string);
+            Matcher matcher = pattern.matcher(input);
             String enemy = null;
             while (matcher.find()) {
                 enemy = matcher.group();
@@ -36,8 +34,15 @@ public class TelnetEventProcessor {
             } catch (NullPointerException npe) {
                 log.fine(npe.toString());
             }
-
-        } else if (string.contains("Enter 3-letter city code:")) {
+        } else if (input.contains("ADRENALINE")) {
+            log.info("\nadreanline found\n" + input);
+            Pattern pattern = Pattern.compile("(\\w+): +(\\S+)");
+            Matcher matcher = pattern.matcher(input);
+            while (matcher.find()) {
+                System.out.println("Name: " + matcher.group(1));
+                System.out.println("Number: " + matcher.group(2));
+            }
+        } else if (input.contains("Enter 3-letter city code:")) {
             log.fine("found enter city code");
         } else {
         }
