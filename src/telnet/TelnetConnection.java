@@ -21,7 +21,7 @@ public class TelnetConnection implements Observer {
     private static Logger log = Logger.getLogger(TelnetConnection.class.getName());
     private TelnetClient telnetClient = new TelnetClient();
     private InputOutput inputOutput = new InputOutput();
-    private TelnetEventProcessor parser = new TelnetEventProcessor();
+    private TelnetEventProcessor eventProcessor = new TelnetEventProcessor();
     private RulesForStrategy rules = null;
     private Context context = null;
 
@@ -41,7 +41,7 @@ public class TelnetConnection implements Observer {
         telnetClient.connect(host, port);
         inputOutput.readWriteParse(telnetClient.getInputStream(), telnetClient.getOutputStream());
         inputOutput.addObserver(this);
-        parser.addObserver(this);
+//        eventProcessor.addObserver(this);
     }
 
     private void sendAction(GameAction action) throws IOException {
@@ -72,11 +72,12 @@ public class TelnetConnection implements Observer {
         GameData data = null;
         String line = null;
         if (o instanceof InputOutput) {
-            if (arg instanceof String) {  //user input
+            if (arg instanceof String) {
                 line = arg.toString();
-                data = parser.parse(line);
+                log.fine("new String from user\n" + line + "\n end user string");
+                data = eventProcessor.parse(line);
                 if (data != null) {
-                    log.info("strange result\t" + data.toString());  //triggers something...
+                    log.severe("strange result from this log\t" + data.toString());
                 }
             } else if (arg instanceof GameData) {
                 log.info("new data from i/o");
@@ -84,14 +85,16 @@ public class TelnetConnection implements Observer {
             } else {
                 log.info("not a i/o arg");
             }
-        } else if (o instanceof TelnetEventProcessor) {
+            /*
+            } else if (o instanceof TelnetEventProcessor) {
             if (arg instanceof GameData) {
-                data = (GameData) arg;
-                log.info("new data from telnet event processor"+ data);
-                newData((GameData) data);
+            data = (GameData) arg;
+            log.info("new data from telnet event processor" + data);
+            newData((GameData) data);
             } else {
-                log.info("not a telnetevent arg");
+            log.info("not a telnetevent arg");
             }
+             */
         }
     }
 

@@ -1,12 +1,11 @@
 package telnet;
 
-import java.util.Observable;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import model.GameData;
 
-public class TelnetEventProcessor extends Observable {
+public class TelnetEventProcessor {
 
     private static Logger log = Logger.getLogger(TelnetEventProcessor.class.getName());
     private String string = null;
@@ -34,8 +33,6 @@ public class TelnetEventProcessor extends Observable {
             }
             try {
                 gameData = new GameData.Builder().enemy(enemy).build();
-                setChanged();
-                notifyObservers(gameData);
             } catch (NullPointerException npe) {
                 log.severe(npe.toString());
             }
