@@ -1,9 +1,10 @@
-package model;
+package telnet;
 
 import java.util.Observable;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import model.GameData;
 
 public class TelnetEventProcessor extends Observable {
 
@@ -19,33 +20,30 @@ public class TelnetEventProcessor extends Observable {
         string = regexMatcher.replaceAll(""); // *3 ??
     }
 
-    public void parse(String string) {
+    public GameData parse(String string) {
         this.string = string;
-        ifs();
-    }
-
-    //       [\w]+(?=\.) 
-    private void ifs() {
+        //       [\w]+(?=\.) 
         log.fine("checking..");
+        GameData gameData = null;
         if (string.contains("confusing the hell out of")) {
             Pattern pattern = Pattern.compile("[\\w]+(?=\\.)");  //(\w+)\.
             Matcher matcher = pattern.matcher(string);
             String enemy = null;
-            GameData data = null;
             while (matcher.find()) {
                 enemy = matcher.group();
             }
             try {
-                data = new GameData.Builder().enemy(enemy).build();
-            } catch (NullPointerException e) {
+                gameData = new GameData.Builder().enemy(enemy).build();
+                setChanged();
+                notifyObservers(gameData);
+            } catch (NullPointerException npe) {
+                log.severe(npe.toString());
             }
-            log.fine("new data object\t\t" + data.getEnemy());
-            setChanged();
-            notifyObservers(data);
 
         } else if (string.contains("Enter 3-letter city code:")) {
             log.fine("found enter city code");
         } else {
         }
+        return gameData;
     }
 }

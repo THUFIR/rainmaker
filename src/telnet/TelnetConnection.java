@@ -15,7 +15,6 @@ import java.util.logging.Logger;
 import org.apache.commons.net.telnet.TelnetClient;
 import model.GameAction;
 import model.GameData;
-import model.TelnetEventProcessor;
 
 public class TelnetConnection implements Observer {
 
@@ -73,9 +72,13 @@ public class TelnetConnection implements Observer {
         GameData data = null;
         String line = null;
         if (o instanceof InputOutput) {
-            if (arg instanceof String) {
+            if (arg instanceof String) {  //user input
                 line = arg.toString();
-                parser.parse(line);
+                data = parser.parse(line);
+                if (data != null) {
+                    log.info("new data\t" + data.toString());  //triggers something...
+                    data = null;
+                }
             } else if (arg instanceof GameData) {
                 newData((GameData) arg);
             } else {

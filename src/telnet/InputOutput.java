@@ -1,7 +1,6 @@
 package telnet;
 
 import game.Alias;
-import model.TelnetEventProcessor;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
