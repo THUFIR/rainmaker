@@ -35,7 +35,10 @@ public class TelnetEventProcessor extends Observable {
             while (matcher.find()) {
                 enemy = matcher.group();
             }
-            data = new GameData.Builder().enemy(enemy).build();
+            try {
+                data = new GameData.Builder().enemy(enemy).build();
+            } catch (NullPointerException e) {
+            }
             log.fine("new data object\t\t" + data.getEnemy());
             setChanged();
             notifyObservers(data);

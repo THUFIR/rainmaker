@@ -1,6 +1,5 @@
 package telnet;
 
-
 import game.Alias;
 import model.TelnetEventProcessor;
 import java.io.BufferedWriter;
@@ -35,7 +34,6 @@ public class InputOutput extends Observable {
                 String line;
                 byte[] bytes;
                 Scanner scanner;
-                //TargetStrategy aliasTarget = new TargetStrategy("nobody");
                 GameData gameData = null;
                 while (true) {
                     scanner = new Scanner(System.in);
@@ -43,11 +41,12 @@ public class InputOutput extends Observable {
                     try {
                         gameData = alias.parseUserInput(line);
                     } catch (StringIndexOutOfBoundsException e) {
-                        log.info(e.toString());
+                        log.fine(e.toString());
                     }
                     if (gameData != null) {
                         setChanged();
                         notifyObservers(gameData);
+                        //       gameData = null;
                     } else {
                         bytes = line.getBytes();
                         try {

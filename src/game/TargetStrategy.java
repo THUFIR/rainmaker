@@ -22,10 +22,11 @@ public class TargetStrategy implements Strategy {
         String enemy = gameData.getEnemy();
         log.fine(enemy);
         Deque<GameAction> deque = new ArrayDeque<>();
-        GameAction backstab = new GameAction("backstab " + enemy);
         GameAction confuse = new GameAction("confuse " + enemy);
+        GameAction backstab = new GameAction("backstab " + enemy);
         GameAction heartplunge = new GameAction("heartplunge " + enemy);
         GameAction enervate = new GameAction("enervate " + enemy);
+        deque.add(confuse);
         deque.add(backstab);
         deque.add(confuse);
         deque.add(heartplunge);
