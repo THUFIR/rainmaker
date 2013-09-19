@@ -1,5 +1,7 @@
 package telnet;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -38,10 +40,17 @@ public class TelnetEventProcessor {
             log.info("\nadreanline found\n" + input);
             Pattern pattern = Pattern.compile("(\\w+): +(\\S+)");
             Matcher matcher = pattern.matcher(input);
+            int hpMin, hpMax, cpMin, cpMax, adr, end, berserk, enemyPerc;
+            Map<String, String> monitorMap = new HashMap<>();
             while (matcher.find()) {
-                System.out.println("Name: " + matcher.group(1));
-                System.out.println("Number: " + matcher.group(2));
+                monitorMap.put(matcher.group(1), matcher.group(2));
             }
+            for (Map.Entry<String, String> e : monitorMap.entrySet()) {
+                String key = e.getKey();
+                String val = e.getValue();
+                log.info(key + "\t" + val);
+            }
+            gameData = new GameData.Builder().monitorMap(monitorMap).build();
         } else if (input.contains("Enter 3-letter city code:")) {
             log.fine("found enter city code");
         } else {
