@@ -18,7 +18,7 @@ public class RulesForStrategy {
 
     public Context getContext() {
         if (gameData != null) {
-            log.info(gameData.toString());
+            log.fine(gameData.toString());
             context = new Context(new TargetStrategy());
             context.setGameData(gameData);
             gameData = null;

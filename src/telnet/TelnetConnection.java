@@ -17,14 +17,14 @@ import model.GameAction;
 import model.GameData;
 
 public class TelnetConnection implements Observer {
-
+    
     private static Logger log = Logger.getLogger(TelnetConnection.class.getName());
     private TelnetClient telnetClient = new TelnetClient();
     private InputOutput inputOutput = new InputOutput();
     private TelnetEventProcessor eventProcessor = new TelnetEventProcessor();
     private RulesForStrategy rules = null;
     private Context context = null;
-
+    
     public TelnetConnection() {
         try {
             init();
@@ -33,7 +33,7 @@ public class TelnetConnection implements Observer {
         } catch (IOException ex) {
         }
     }
-
+    
     private void init() throws SocketException, FileNotFoundException, IOException {
         Properties props = PropertiesReader.getProps();
         InetAddress host = InetAddress.getByName(props.getProperty("host"));
@@ -43,7 +43,7 @@ public class TelnetConnection implements Observer {
         inputOutput.addObserver(this);
 //        eventProcessor.addObserver(this);
     }
-
+    
     private void sendAction(GameAction action) throws IOException {
         log.fine(action.toString());
         byte[] actionBytes = action.getAction().getBytes();
@@ -53,11 +53,13 @@ public class TelnetConnection implements Observer {
         outputStream.write(10);
         outputStream.flush();
     }
-
+    
     private void newData(GameData data) {
-        rules = new RulesForStrategy(data);
-        context = rules.getContext();
-        if (context != null) {
+        log.info("new data?\t" + data + "\n end new data");
+        if (data != null) {
+            log.info("not null data:\n" + data + "\nend new data");
+            rules = new RulesForStrategy(data);
+            context = rules.getContext();
             Deque<GameAction> gameActions = context.executeStrategy();
             while (!gameActions.isEmpty()) {
                 GameAction action = gameActions.remove();
@@ -68,7 +70,7 @@ public class TelnetConnection implements Observer {
             }
         }
     }
-
+    
     @Override
     public void update(Observable o, Object arg) {
         GameData data = null;
@@ -96,7 +98,7 @@ public class TelnetConnection implements Observer {
             data = null;
         }
     }
-
+    
     public static void main(String[] args) {
         new TelnetConnection();
     }
