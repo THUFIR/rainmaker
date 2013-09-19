@@ -33,8 +33,8 @@ public class InputOutput extends Observable {
                 String line;
                 byte[] bytes;
                 Scanner scanner;
-                GameData gameData = null;
                 while (true) {
+                    GameData gameData = null;
                     scanner = new Scanner(System.in);
                     line = scanner.nextLine();
                     try {
@@ -45,7 +45,7 @@ public class InputOutput extends Observable {
                     if (gameData != null) {
                         setChanged();
                         notifyObservers(gameData);
-                        //       gameData = null;
+                        //gameData = null;
                     } else {
                         bytes = line.getBytes();
                         try {

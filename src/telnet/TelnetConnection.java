@@ -17,14 +17,14 @@ import model.GameAction;
 import model.GameData;
 
 public class TelnetConnection implements Observer {
-    
+
     private static Logger log = Logger.getLogger(TelnetConnection.class.getName());
     private TelnetClient telnetClient = new TelnetClient();
     private InputOutput inputOutput = new InputOutput();
     private TelnetEventProcessor eventProcessor = new TelnetEventProcessor();
     private RulesForStrategy rules = null;
     private Context context = null;
-    
+
     public TelnetConnection() {
         try {
             init();
@@ -33,7 +33,7 @@ public class TelnetConnection implements Observer {
         } catch (IOException ex) {
         }
     }
-    
+
     private void init() throws SocketException, FileNotFoundException, IOException {
         Properties props = PropertiesReader.getProps();
         InetAddress host = InetAddress.getByName(props.getProperty("host"));
@@ -43,7 +43,7 @@ public class TelnetConnection implements Observer {
         inputOutput.addObserver(this);
 //        eventProcessor.addObserver(this);
     }
-    
+
     private void sendAction(GameAction action) throws IOException {
         log.fine(action.toString());
         byte[] actionBytes = action.getAction().getBytes();
@@ -53,7 +53,7 @@ public class TelnetConnection implements Observer {
         outputStream.write(10);
         outputStream.flush();
     }
-    
+
     private void newData(GameData data) {
         log.fine("new data?\t" + data + "\n end new data");
         if (data != null) {
@@ -70,35 +70,23 @@ public class TelnetConnection implements Observer {
             }
         }
     }
-    
+
     @Override
     public void update(Observable o, Object arg) {
-        GameData data = null;
-        String line = null;
+        String remoteLineFromGame = null;
         if (o instanceof InputOutput) {
             if (arg instanceof String) {
-                line = arg.toString();
-                data = eventProcessor.parse(line);
-                newData(data);
+                remoteLineFromGame = arg.toString();
+                newData(eventProcessor.parse(remoteLineFromGame));
             } else if (arg instanceof GameData) {
                 newData((GameData) arg);
             } else {
                 log.info("not a i/o arg");
             }
-            /*
-            } else if (o instanceof TelnetEventProcessor) {
-            if (arg instanceof GameData) {
-            data = (GameData) arg;
-            log.info("new data from telnet event processor" + data);
-            newData((GameData) data);
-            } else {
-            log.info("not a telnetevent arg");
-            }
-             */
-            data = null;
         }
+        remoteLineFromGame = null;
     }
-    
+
     public static void main(String[] args) {
         new TelnetConnection();
     }

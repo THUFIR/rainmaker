@@ -34,7 +34,7 @@ public class TelnetEventProcessor {
             try {
                 gameData = new GameData.Builder().enemy(enemy).build();
             } catch (NullPointerException npe) {
-                log.severe(npe.toString());
+                log.fine(npe.toString());
             }
 
         } else if (string.contains("Enter 3-letter city code:")) {
