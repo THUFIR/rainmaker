@@ -57,12 +57,14 @@ public class TelnetConnection implements Observer {
     private void newData(GameData data) {
         rules = new RulesForStrategy(data);
         context = rules.getContext();
-        Deque<GameAction> gameActions = context.executeStrategy();
-        while (!gameActions.isEmpty()) {
-            GameAction action = gameActions.remove();
-            try {
-                sendAction(action);
-            } catch (IOException ex) {
+        if (context != null) {
+            Deque<GameAction> gameActions = context.executeStrategy();
+            while (!gameActions.isEmpty()) {
+                GameAction action = gameActions.remove();
+                try {
+                    sendAction(action);
+                } catch (IOException ex) {
+                }
             }
         }
     }
@@ -74,13 +76,9 @@ public class TelnetConnection implements Observer {
         if (o instanceof InputOutput) {
             if (arg instanceof String) {
                 line = arg.toString();
-                log.fine("new String from user\n" + line + "\n end user string");
                 data = eventProcessor.parse(line);
-                if (data != null) {
-                    log.severe("strange result from this log\t" + data.toString());
-                }
+                newData(data);
             } else if (arg instanceof GameData) {
-                log.info("new data from i/o");
                 newData((GameData) arg);
             } else {
                 log.info("not a i/o arg");
@@ -95,6 +93,7 @@ public class TelnetConnection implements Observer {
             log.info("not a telnetevent arg");
             }
              */
+            data = null;
         }
     }
 

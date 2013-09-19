@@ -17,10 +17,12 @@ public class RulesForStrategy {
     }
 
     public Context getContext() {
-        log.info(gameData.toString());
-        context = new Context(new TargetStrategy());
-        context.setGameData(gameData);
-        gameData = null;
+        if (gameData != null) {
+            log.info(gameData.toString());
+            context = new Context(new TargetStrategy());
+            context.setGameData(gameData);
+            gameData = null;
+        }
         return context;
     }
 }
