@@ -14,7 +14,7 @@ import java.util.Properties;
 import java.util.logging.Logger;
 import org.apache.commons.net.telnet.TelnetClient;
 import model.GameAction;
-import model.GameDataBean;
+import model.GameTarget;
 
 public class TelnetConnection implements Observer {
 
@@ -24,6 +24,7 @@ public class TelnetConnection implements Observer {
     private TelnetEventProcessor eventProcessor = new TelnetEventProcessor();
     private RulesForStrategy rules = null;
     private Context context = null;
+    private GameTarget target = null;
 
     public TelnetConnection() {
         try {
@@ -54,11 +55,13 @@ public class TelnetConnection implements Observer {
         outputStream.flush();
     }
 
-    private void newData(GameDataBean data) {
-        log.fine("new data?\t" + data + "\n end new data");
-        if (data != null) {
-            log.fine("not null data:\n" + data + "\nend new data");
-            rules = new RulesForStrategy(data);
+    private void newTarget() {
+        log.fine("new data?\t" + target + "\n end new data");
+        if (target != null) {
+            log.fine("not null data:\n" + target + "\nend new data");
+//            rules = new RulesForStrategy(target);
+            rules = new RulesForStrategy();
+            rules.setTarget(target);
             context = rules.getContext();
             Deque<GameAction> gameActions = context.executeStrategy();
             while (!gameActions.isEmpty()) {
@@ -77,9 +80,11 @@ public class TelnetConnection implements Observer {
         if (o instanceof InputOutput) {
             if (arg instanceof String) {
                 remoteLineFromGame = arg.toString();
-                newData(eventProcessor.parse(remoteLineFromGame));
-            } else if (arg instanceof GameDataBean) {
-                newData((GameDataBean) arg);
+                target = (eventProcessor.parse(remoteLineFromGame));
+                newTarget();
+            } else if (arg instanceof GameTarget) {
+                this.target = (GameTarget) arg;
+                newTarget();
             } else {
                 log.info("not a i/o arg");
             }

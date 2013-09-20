@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import model.GameDataBean;
+import model.GameTarget;
 
 public class Alias {
 
@@ -14,8 +14,8 @@ public class Alias {
     public Alias() {
     }
 
-    public GameDataBean parseUserInput(String line) throws StringIndexOutOfBoundsException {
-        GameDataBean gameData = null;
+    public GameTarget parseUserInput(String line) throws StringIndexOutOfBoundsException {
+        GameTarget gameData = null;
         char c = line.charAt(0);
         String s = String.valueOf(c);
         if ("/".equals(s)) {
@@ -24,8 +24,8 @@ public class Alias {
         return gameData;
     }
 
-    private GameDataBean buildGameData(String line) {
-        GameDataBean gameData = null;
+    private GameTarget buildGameData(String line) {
+        GameTarget gameData = null;
         Pattern pattern = Pattern.compile("(\\w+)");
         Matcher matcher = pattern.matcher(line);
         List<String> strings = new ArrayList<>();
@@ -37,7 +37,7 @@ public class Alias {
             if ("t".equals(strings.get(0))) {
                 String enemy = strings.get(strings.size() - 1);
                 // gameData = new GameDataBean.Builder().enemy(enemy).build();
-                gameData = new GameDataBean();
+                gameData = new GameTarget();
                 gameData.setEnemy(enemy);
             }
         }

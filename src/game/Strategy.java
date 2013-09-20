@@ -2,9 +2,9 @@ package game;
 
 import java.util.Deque;
 import model.GameAction;
-import model.GameDataBean;
+import model.GameTarget;
 
 public interface Strategy {
 
-    public Deque<GameAction> execute(GameDataBean gameData);
+    public Deque<GameAction> execute(GameTarget gameData);
 }

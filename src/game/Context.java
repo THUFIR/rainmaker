@@ -4,13 +4,13 @@ import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.logging.Logger;
 import model.GameAction;
-import model.GameDataBean;
+import model.GameTarget;
 
 public class Context {
 
     private static Logger log = Logger.getLogger(Context.class.getName());
     private Strategy strategy;
-    private GameDataBean gameData = null;
+    private GameTarget gameData = null;
 
     private Context() {
     }
@@ -24,7 +24,7 @@ public class Context {
         return this.strategy.execute(gameData);
     }
 
-    public void setGameData(GameDataBean gameData) {
+    public void setGameData(GameTarget gameData) {
         this.gameData = gameData;
     }
 }

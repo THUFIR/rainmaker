@@ -14,7 +14,7 @@ import java.util.Observable;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import model.GameDataBean;
+import model.GameTarget;
 import org.apache.commons.io.output.TeeOutputStream;
 
 public class InputOutput extends Observable {
@@ -34,7 +34,7 @@ public class InputOutput extends Observable {
                 byte[] bytes;
                 Scanner scanner;
                 while (true) {
-                    GameDataBean gameData = null;
+                    GameTarget gameData = null;
                     scanner = new Scanner(System.in);
                     line = scanner.nextLine();
                     try {
