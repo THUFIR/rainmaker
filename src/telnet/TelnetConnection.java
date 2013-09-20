@@ -61,7 +61,7 @@ public class TelnetConnection implements Observer {
         if (newData != null) {
             log.fine("not null data:\n" + newData + "\nend new data");
             rules = new RulesForStrategy();
-            rules.setData(newData);
+            rules.setData(oldData,newData);
             context = rules.getContext();
             Deque<GameAction> gameActions = context.executeStrategy();
             while (!gameActions.isEmpty()) {
