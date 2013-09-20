@@ -5,8 +5,7 @@ import java.util.Map;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import model.GameTarget;
-import model.MonitorStats;
+import model.GameDataBean;
 
 public class TelnetEventProcessor {
 
@@ -21,11 +20,10 @@ public class TelnetEventProcessor {
         String string = regexMatcher.replaceAll(""); // *3 ??
     }
 
-    public GameTarget parse(String input) {
+    public GameDataBean parse(String input) {
         //       [\w]+(?=\.) 
         log.fine("checking..");
-        GameTarget target = null;
-        MonitorStats monitor = null;
+        GameDataBean data = null;
         if (input.contains("confusing the hell out of")) {
             Pattern pattern = Pattern.compile("[\\w]+(?=\\.)");  //(\w+)\.
             Matcher matcher = pattern.matcher(input);
@@ -35,8 +33,8 @@ public class TelnetEventProcessor {
             }
             try {
                 // gameData = new GameDataBean.Builder().enemy(enemy).build();
-                target = new GameTarget();
-                target.setEnemy(enemy);
+                data = new GameDataBean();
+                data.setEnemy(enemy);
             } catch (NullPointerException npe) {
                 log.fine(npe.toString());
             }
@@ -55,13 +53,10 @@ public class TelnetEventProcessor {
                 log.info(key + "\t" + val);
             }
             // gameData = new GameDataBean.Builder().monitorMap(monitorMap).build();
-            target = new GameTarget();
-            monitor = new MonitorStats();
-            monitor.setMonitorMap(monitorMap);
-        } else if (input.contains("Enter 3-letter city code:")) {
-            log.fine("found enter city code");
+            data = new GameDataBean();
+            data.setMonitorMap(monitorMap);
         } else {
         }
-        return target;
+        return data;
     }
 }

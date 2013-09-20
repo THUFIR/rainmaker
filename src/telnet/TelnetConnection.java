@@ -14,7 +14,7 @@ import java.util.Properties;
 import java.util.logging.Logger;
 import org.apache.commons.net.telnet.TelnetClient;
 import model.GameAction;
-import model.GameTarget;
+import model.GameDataBean;
 
 public class TelnetConnection implements Observer {
 
@@ -24,7 +24,8 @@ public class TelnetConnection implements Observer {
     private TelnetEventProcessor eventProcessor = new TelnetEventProcessor();
     private RulesForStrategy rules = null;
     private Context context = null;
-    private GameTarget target = null;
+    private GameDataBean newData = null;
+    private GameDataBean oldData = null;
 
     public TelnetConnection() {
         try {
@@ -56,12 +57,11 @@ public class TelnetConnection implements Observer {
     }
 
     private void newTarget() {
-        log.fine("new data?\t" + target + "\n end new data");
-        if (target != null) {
-            log.fine("not null data:\n" + target + "\nend new data");
-//            rules = new RulesForStrategy(target);
+        log.fine("new data?\t" + newData + "\n end new data");
+        if (newData != null) {
+            log.fine("not null data:\n" + newData + "\nend new data");
             rules = new RulesForStrategy();
-            rules.setTarget(target);
+            rules.setData(newData);
             context = rules.getContext();
             Deque<GameAction> gameActions = context.executeStrategy();
             while (!gameActions.isEmpty()) {
@@ -72,6 +72,8 @@ public class TelnetConnection implements Observer {
                 }
             }
         }
+        oldData = newData;
+        newData = null;
     }
 
     @Override
@@ -80,10 +82,10 @@ public class TelnetConnection implements Observer {
         if (o instanceof InputOutput) {
             if (arg instanceof String) {
                 remoteLineFromGame = arg.toString();
-                target = (eventProcessor.parse(remoteLineFromGame));
+                newData = (eventProcessor.parse(remoteLineFromGame));
                 newTarget();
-            } else if (arg instanceof GameTarget) {
-                this.target = (GameTarget) arg;
+            } else if (arg instanceof GameDataBean) {
+                newData = (GameDataBean) arg;
                 newTarget();
             } else {
                 log.info("not a i/o arg");

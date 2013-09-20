@@ -4,7 +4,7 @@ import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.logging.Logger;
 import model.GameAction;
-import model.GameTarget;
+import model.GameDataBean;
 
 public class KillStrategy implements Strategy {
 
@@ -18,7 +18,7 @@ public class KillStrategy implements Strategy {
     }
 
     @Override
-    public Deque<GameAction> execute(GameTarget gameData) {
+    public Deque<GameAction> execute(GameDataBean gameData) {
         Deque<GameAction> deque = new ArrayDeque<>();
         GameAction backstab = new GameAction("backstab "+ gameData.getEnemy());
         deque.add(backstab);

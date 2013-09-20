@@ -1,46 +1,37 @@
 package game;
 
 import java.util.logging.Logger;
-import model.GameTarget;
-import model.MonitorStats;
+import model.GameDataBean;
 
 public class RulesForStrategy {
 
     private static Logger log = Logger.getLogger(RulesForStrategy.class.getName());
     private Context context = null;
-    private GameTarget target = null;
-    private MonitorStats monitor = null;
+    private GameDataBean data = null;
 
     public RulesForStrategy() {
     }
 
-    private RulesForStrategy(GameTarget target) {
-        this.target = target;
+    private RulesForStrategy(GameDataBean data) {
+        this.data = data;
     }
 
     public Context getContext() {
-        if (getTarget() != null) {
-            log.fine(getTarget().toString());
+        if (getData() != null) {
+            log.fine(getData().toString());
             context = new Context(new TargetStrategy());
-            context.setGameData(getTarget());
-            setTarget(null);
+            context.setData(getData());
+            setData(null);
         }
         return context;
     }
 
-    public GameTarget getTarget() {
-        return target;
+    public GameDataBean getData() {
+        return data;
     }
 
-    public void setTarget(GameTarget target) {
-        this.target = target;
+    public void setData(GameDataBean data) {
+        this.data = data;
     }
 
-    public MonitorStats getMonitor() {
-        return monitor;
-    }
-
-    public void setMonitor(MonitorStats monitor) {
-        this.monitor = monitor;
-    }
 }

@@ -3,12 +3,20 @@ package model;
 import java.util.Map;
 import java.util.logging.Logger;
 
-public class MonitorStats {
+public class GameDataBean {
 
-    private static Logger log = Logger.getLogger(MonitorStats.class.getName());
+    private static Logger log = Logger.getLogger(GameDataBean.class.getName());
+    private String enemy = null;
     private Map<String, String> monitorMap = null;
 
-    public MonitorStats() {
+    public GameDataBean() {
+    }
+    public String getEnemy() {
+        return enemy;
+    }
+
+    public void setEnemy(String enemy) {
+        this.enemy = enemy;
     }
 
     public Map<String, String> getMonitorMap() {
@@ -18,4 +26,5 @@ public class MonitorStats {
     public void setMonitorMap(Map<String, String> monitorMap) {
         this.monitorMap = monitorMap;
     }
+
 }
