@@ -61,19 +61,20 @@ public class TelnetConnection implements Observer {
         if (newData != null) {
             log.fine("not null data:\n" + newData + "\nend new data");
             rules = new RulesForStrategy();
-            rules.setData(oldData,newData);
+            rules.setData(oldData, newData);
             context = rules.getContext();
-            Deque<GameAction> gameActions = context.executeStrategy();
-            while (!gameActions.isEmpty()) {
-                GameAction action = gameActions.remove();
-                try {
-                    sendAction(action);
-                } catch (IOException ex) {
+            try {
+                Deque<GameAction> gameActions = context.executeStrategy();
+                while (!gameActions.isEmpty()) {
+                    GameAction action = gameActions.remove();
+                    try {
+                        sendAction(action);
+                    } catch (IOException ex) {
+                    }
                 }
+            } catch (NullPointerException npe) {
             }
         }
-        oldData = newData;
-        newData = null;
     }
 
     @Override
@@ -82,9 +83,11 @@ public class TelnetConnection implements Observer {
         if (o instanceof InputOutput) {
             if (arg instanceof String) {
                 remoteLineFromGame = arg.toString();
+                oldData = newData;
                 newData = (eventProcessor.parse(remoteLineFromGame));
                 newTarget();
             } else if (arg instanceof GameDataBean) {
+                oldData = newData;
                 newData = (GameDataBean) arg;
                 newTarget();
             } else {

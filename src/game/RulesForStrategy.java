@@ -18,13 +18,13 @@ public class RulesForStrategy {
     }
 
     public Context getContext() {
-        if (getData() != null) {
+        if ((oldData != null) && (newData != null)) {
             log.fine(getData().toString());
-            if (newData.getEnemy() != null) {
-                context = new Context(new TargetStrategy());
-                context.setData(getData());
-            } else {
+            if (newData.getEnemy() == null) {
+                newData.setEnemy(oldData.getEnemy());
             }
+            context = new Context(new TargetStrategy());
+            context.setData(getData());
             oldData = null;
             newData = null;
         }
