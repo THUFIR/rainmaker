@@ -20,7 +20,7 @@ public class Context {
     }
 
     public Deque<GameAction> executeStrategy() {
-        log.fine(strategy.toString());
+        log.info(strategy.toString());
         return this.strategy.execute(data);
     }
 

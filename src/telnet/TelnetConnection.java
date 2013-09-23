@@ -1,8 +1,7 @@
 package telnet;
 
-
 import game.Context;
-import game.RulesForStrategy;
+import game.RulesForStrategySimple;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -23,10 +22,9 @@ public class TelnetConnection implements Observer {
     private TelnetClient telnetClient = new TelnetClient();
     private InputOutput inputOutput = new InputOutput();
     private TelnetEventProcessor eventProcessor = new TelnetEventProcessor();
-    private RulesForStrategy rules = null;
+    private RulesForStrategySimple rulesEngine = null;
     private Context context = null;
     private GameDataBean newData = null;
-    private GameDataBean oldData = null;
 
     public TelnetConnection() {
         try {
@@ -58,42 +56,36 @@ public class TelnetConnection implements Observer {
     }
 
     private void newTarget() {
-        log.fine("new data?\t" + newData + "\n end new data");
-        if (newData != null) {
-            log.fine("not null data:\n" + newData + "\nend new data");
-            rules = new RulesForStrategy();
-            rules.setData(oldData, newData);
-            context = rules.getContext();
-            try {
-                Deque<GameAction> gameActions = context.executeStrategy();
-                while (!gameActions.isEmpty()) {
-                    GameAction action = gameActions.remove();
-                    try {
-                        sendAction(action);
-                    } catch (IOException ex) {
-                    }
+        rulesEngine = new RulesForStrategySimple(newData);
+        try {
+            context = rulesEngine.getContext();
+            Deque<GameAction> gameActions = context.executeStrategy();
+            while (!gameActions.isEmpty()) {
+                GameAction action = gameActions.remove();
+                try {
+                    sendAction(action);
+                } catch (IOException ex) {
                 }
-            } catch (NullPointerException npe) {
             }
+        } catch (NullPointerException npe) {
         }
     }
 
     @Override
     public void update(Observable o, Object arg) {
+        Class<? extends Object> f = arg.getClass();
         String remoteLineFromGame = null;
         if (o instanceof InputOutput) {
             if (arg instanceof String) {
                 remoteLineFromGame = arg.toString();
-                oldData = newData;
                 newData = (eventProcessor.parse(remoteLineFromGame));
                 newTarget();
             } else if (arg instanceof GameDataBean) {
-                oldData = newData;
                 newData = (GameDataBean) arg;
                 newTarget();
-            } else {
-                log.info("not a i/o arg");
             }
+        } else {
+            log.info("huh?\n" + o.toString());
         }
         remoteLineFromGame = null;
     }

@@ -3,28 +3,33 @@ package game;
 import java.util.logging.Logger;
 import model.GameDataBean;
 
-public class RulesForStrategy {
+public class RulesForStrategyComplex {
 
-    private static Logger log = Logger.getLogger(RulesForStrategy.class.getName());
+    private static Logger log = Logger.getLogger(RulesForStrategyComplex.class.getName());
     private Context context = null;
     private GameDataBean oldData = null;
     private GameDataBean newData = null;
 
-    public RulesForStrategy() {
+    private RulesForStrategyComplex() {
     }
 
-    private RulesForStrategy(GameDataBean data) {
-        this.newData = data;
+    private RulesForStrategyComplex(GameDataBean data) {
+    }
+
+    public RulesForStrategyComplex(GameDataBean oldData, GameDataBean newData) {
+        this.oldData = oldData;
+        this.newData = newData;
     }
 
     public Context getContext() {
         if ((oldData != null) && (newData != null)) {
-            log.fine(getData().toString());
+            log.info("old data\n" + oldData.toString());
+            log.info("new data\n" + newData.toString());
             if (newData.getEnemy() == null) {
                 newData.setEnemy(oldData.getEnemy());
             }
             context = new Context(new TargetStrategy());
-            context.setData(getData());
+            context.setData(newData);
             oldData = null;
             newData = null;
         }

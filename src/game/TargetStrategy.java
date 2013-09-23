@@ -13,6 +13,7 @@ public class TargetStrategy implements Strategy {
     public TargetStrategy() {
     }
 
+    @Override
     public String toString() {
         return "target";
     }

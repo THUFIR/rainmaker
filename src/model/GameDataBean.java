@@ -11,6 +11,7 @@ public class GameDataBean {
 
     public GameDataBean() {
     }
+
     public String getEnemy() {
         return enemy;
     }
@@ -27,4 +28,8 @@ public class GameDataBean {
         this.monitorMap = monitorMap;
     }
 
+    @Override
+    public String toString() {
+        return enemy;
+    }
 }
