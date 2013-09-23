@@ -1,5 +1,6 @@
 package telnet;
 
+
 import game.Context;
 import game.RulesForStrategy;
 import java.io.FileNotFoundException;
