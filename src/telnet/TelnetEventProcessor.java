@@ -33,8 +33,7 @@ public class TelnetEventProcessor {
             }
             try {
                 // gameData = new GameDataBean.Builder().enemy(enemy).build();
-                data = new GameDataBean();
-                data.setEnemy(enemy);
+                data = new GameDataBean(enemy);
             } catch (NullPointerException npe) {
                 log.fine(npe.toString());
             }
@@ -53,7 +52,7 @@ public class TelnetEventProcessor {
                 log.info(key + "\t" + val);
             }
             // gameData = new GameDataBean.Builder().monitorMap(monitorMap).build();
-            data = new GameDataBean();
+            data = new GameDataBean("no known enemy!...?");
             data.setMonitorMap(monitorMap);
         } else {
         }

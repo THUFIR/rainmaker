@@ -9,7 +9,11 @@ public class GameDataBean {
     private String enemy = null;
     private Map<String, String> monitorMap = null;
 
-    public GameDataBean() {
+    private GameDataBean() {
+    }
+
+    public GameDataBean(String enemy) {
+        this.enemy = enemy;
     }
 
     public String getEnemy() {

@@ -36,9 +36,7 @@ public class Alias {
             log.fine(strings.toString());
             if ("t".equals(strings.get(0))) {
                 String enemy = strings.get(strings.size() - 1);
-                // gameData = new GameDataBean.Builder().enemy(enemy).build();
-                gameData = new GameDataBean();
-                gameData.setEnemy(enemy);
+                gameData = new GameDataBean(enemy);
             }
         }
         return gameData;
