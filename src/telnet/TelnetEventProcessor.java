@@ -2,6 +2,7 @@ package telnet;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -20,7 +21,7 @@ public class TelnetEventProcessor {
         String string = regexMatcher.replaceAll(""); // *3 ??
     }
 
-    public GameDataBean parse(String input) {
+    private GameDataBean parse(String input) {
         //       [\w]+(?=\.) 
         log.fine("checking..");
         GameDataBean data = null;
@@ -38,7 +39,7 @@ public class TelnetEventProcessor {
                 log.fine(npe.toString());
             }
         } else if (input.contains("ADRENALINE")) {
-            log.info("\nadreanline found\n" + input);
+            log.log(Level.INFO, "adrenaline found\n{0}", input);
             Pattern pattern = Pattern.compile("(\\w+): +(\\S+)");
             Matcher matcher = pattern.matcher(input);
             int hpMin, hpMax, cpMin, cpMax, adr, end, berserk, enemyPerc;

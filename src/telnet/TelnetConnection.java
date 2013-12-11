@@ -23,7 +23,8 @@ public class TelnetConnection implements Observer {
     private InputOutput inputOutput = new InputOutput();
     private TelnetEventProcessor eventProcessor = new TelnetEventProcessor();
     private RulesForStrategySimple rulesEngine = null;
-    private Context context = null;
+    private Context context1 = null;
+    private GameDataBean oldData = null;
     private GameDataBean newData = null;
 
     public TelnetConnection() {
@@ -56,10 +57,10 @@ public class TelnetConnection implements Observer {
     }
 
     private void newTarget() {
-        rulesEngine = new RulesForStrategySimple(newData);
         try {
-            context = rulesEngine.getContext();
-            Deque<GameAction> gameActions = context.executeStrategy();
+            context1 = new RulesForStrategySimple(oldData).getContext();
+            oldData = newData;
+            Deque<GameAction> gameActions = context1.executeStrategy();
             while (!gameActions.isEmpty()) {
                 GameAction action = gameActions.remove();
                 try {
